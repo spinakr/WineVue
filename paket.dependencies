@@ -1,0 +1,10 @@
+source https://nuget.org/api/v2
+
+nuget FSharp.Core
+nuget Suave
+nuget Newtonsoft.Json
+nuget jose-jwt
+
+nuget WindowsAzure.Storage
+
+clitool Microsoft.DotNet.Watcher.Tools
