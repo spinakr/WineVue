@@ -8,7 +8,7 @@ open Newtonsoft.Json
 let mutable wines = ["Wine1"; "Wine4"]
 
 let getAllWines = 
-    Successful.OK (JsonConvert.SerializeObject(wines))
+    Successful.OK (JsonConvert.SerializeObject(Database.getWineList "anders"))
 
 let addNewWine = 
     List.append wines ["NewWine"] |> ignore

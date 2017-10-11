@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Domain.fs" />
+    <Compile Include="Database.fs" />
     <Compile Include="Wines.fs" />
     <Compile Include="WebServer.fs" />
     <Compile Include="Program.fs" />
