@@ -6,11 +6,11 @@ open Suave.Operators
 open Suave.Successful
 open Suave.Writers
 
-let start =
+let start connectionString =
     let app = 
         choose [
             GET >=> choose [
-                path "/api/wines" >=> Wines.getAllWines
+                path "/api/wines" >=> Wines.getAllWines connectionString
             ]
             POST >=> choose [
                 path "/api/wines/" >=> Wines.addNewWine

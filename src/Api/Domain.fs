@@ -4,7 +4,7 @@ type Wine =
     { 
         Name : string
         Fruit : string
-        Price : int
+        Price : string
     }
 
 type WineList =

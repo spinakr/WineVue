@@ -5,11 +5,14 @@ open Suave.Filters
 open Newtonsoft.Json
 
 
-let mutable wines = ["Wine1"; "Wine4"]
 
-let getAllWines = 
-    Successful.OK (JsonConvert.SerializeObject(Database.getWineList "anders"))
+let getAllWines connectionString (ctx: HttpContext)= async {
+    printfn "Get all wines invoked!"
+    let! wineList = Database.getWineList connectionString "IngridAnders"
+    return! Successful.OK (JsonConvert.SerializeObject(wineList)) ctx
+}
 
-let addNewWine = 
-    List.append wines ["NewWine"] |> ignore
-    Successful.OK ""
+let addNewWine (ctx: HttpContext) = async {
+    printfn "Add new wine invoked!"
+    return! Successful.OK "" ctx
+}
