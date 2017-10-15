@@ -26,7 +26,7 @@ type AzureConnection =
 
 let getWinesTable (AzureConnection connectionString) = async {
     let client = (CloudStorageAccount.Parse connectionString).CreateCloudTableClient()
-    let table = client.GetTableReference "wines"
+    let table = client.GetTableReference "winestest"
     let rec createTableSafe() = async {
         try
         do! table.CreateIfNotExistsAsync() |> Async.AwaitTask |> Async.Ignore

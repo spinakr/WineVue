@@ -7,7 +7,6 @@ open Newtonsoft.Json
 
 
 let getAllWines connectionString (ctx: HttpContext)= async {
-    printfn "Get all wines invoked!"
     let! wineList = Database.getWineList connectionString "IngridAnders"
     return! Successful.OK (JsonConvert.SerializeObject(wineList)) ctx
 }
