@@ -1,10 +1,8 @@
 module Database
 
 open Domain
-open System.IO
 open Microsoft.WindowsAzure.Storage
 open Microsoft.WindowsAzure.Storage.Table
-open Microsoft.WindowsAzure.Storage.Blob
 
 let getDefault userName = async {
     printfn "Getting default wine list"

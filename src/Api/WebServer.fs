@@ -3,8 +3,6 @@ module Api.WebServer
 open Suave
 open Suave.Filters
 open Suave.Operators
-open Suave.Successful
-open Suave.Writers
 
 let start connectionString =
     let app = 
