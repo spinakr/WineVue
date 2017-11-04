@@ -10,7 +10,7 @@ let start connectionString =
         choose [
             GET >=> choose [
                 path "/" >=> Files.browseFileHome "index.html"
-                //pathRegex @"/(public|js|css|Images)/(.*)\.(css|png|gif|jpg|js|map)" >=> Files.browseHome
+                pathRegex @"/(.*)\.(css|png|gif|jpg|js|map)" >=> Files.browseHome
                 path "/api/wines" >=> Wines.getAllWines connectionString
             ]
             POST >=> choose [
@@ -19,7 +19,7 @@ let start connectionString =
         ]
 
     let appPath =
-        let path = Path.Combine("..","App")
+        let path = Path.Combine("..","app", "dist")
         if Directory.Exists path 
         then (path |> Path.GetFullPath)
         else (path |> Path.GetFullPath)

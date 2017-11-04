@@ -1,0 +1,15 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "WineVue web application",
+  "author": "Anders Kofoed <anders.kfd@gmail.com>",
+  "private": true,
+  "scripts": {
+    "start": "poi",
+    "build": "poi build"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "poi": "^9.5.0"
+  }
+}
