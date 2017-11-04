@@ -1,17 +1,19 @@
 <template>
   <div id="app">
-      <Header />
-      <span>This is the app component </span>
+      <AppHeader />
+      <div id="view-container">
+          <router-view></router-view>
+      </div>
   </div>
 </template>
 
 <script>
-import Header from './components/Header.vue'
+import AppHeader from './components/AppHeader.vue'
 
 export default {
   name: 'app',
   components: {
-      Header
+      AppHeader
   }
 }
 </script>
@@ -19,8 +21,10 @@ export default {
 <style>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+#view-container {
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 60px;
 }
 </style>

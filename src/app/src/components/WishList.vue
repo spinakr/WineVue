@@ -1,15 +1,16 @@
 <template>
   <div>
+      <h2>WishList</h2>
       {{msg}}
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Header',
+  name: 'WishList',
   data () {
     return {
-      msg: 'This is header text'
+      msg: 'This is wish list data'
     }
   }
 }
