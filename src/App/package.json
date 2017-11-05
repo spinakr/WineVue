@@ -9,6 +9,7 @@
     "build": "poi build"
   },
   "dependencies": {
+    "axios": "^0.17.0",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
