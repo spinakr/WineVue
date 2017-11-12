@@ -19,12 +19,16 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+html, body, #app {
+    height: 100%;
+    width: 100%;
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
 }
+
 #view-container {
-    text-align: center;
-    color: #2c3e50;
-    margin-top: 60px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 10px;
+    max-width: 920px;
 }
 </style>
