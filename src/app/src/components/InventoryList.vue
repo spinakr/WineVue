@@ -1,17 +1,17 @@
 <template>
-    <div id="inventory-list">
-        <wine-list />
-    </div>
+  <div id="inventory-list">
+    <wine-list />
+  </div>
 </template>
 
 <script>
-import WineList from './WineList.vue'
+import WineList from "./WineList.vue";
 
 export default {
-    name: 'InventoryList',
+  name: "InventoryList",
 
-    components: {
-        WineList    
-    }
-}
+  components: {
+    WineList
+  }
+};
 </script>

@@ -1,19 +1,20 @@
 <template>
   <div>
-      {{msg}}
+    {{msg}}
   </div>
 </template>
 
 <script>
 export default {
-  name: 'AppHeader',
-  data () {
+  name: "AppHeader",
+  data() {
     return {
-      msg: 'This is header text'
-    }
+      msg: "This is header text"
+    };
   }
-}
+};
 </script>
 
 <style scoped>
+
 </style>
