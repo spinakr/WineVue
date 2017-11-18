@@ -1,15 +1,33 @@
 <template>
     <div id="wine-list">
+        <div v-if="error">
+            {{error}}
+        </div>
         <wine-listing v-for="wine in wines" :wine="wine" :key="wine.Name" />
     </div>
 </template>
 
 <script>
 import WineListing from './WineListing.vue'
+import wineService from '../services/wines';
 
 export default {
     name: 'WineList',
-    props: ['wines'],
+    data () {
+        return {
+            wines: [],
+            error: ''
+        }
+    },
+    created () {
+        wineService.get(this.$route.name)
+            .then(response => {
+                this.wines = response.data.Wines
+            })
+            .catch(e => {
+                this.error = e
+            });
+    },
     components: {
         WineListing 
     }

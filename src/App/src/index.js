@@ -8,8 +8,8 @@ Vue.use(VueRouter);
 
 const router = new VueRouter({
     routes: [
-        { path: '/', component: InventoryList },
-        { path: '/wishlist', component: WishList }
+        { name: 'inventory', path: '/', component: InventoryList },
+        { name: 'wishlist', path: '/wishlist', component: WishList }
     ]
 })
 

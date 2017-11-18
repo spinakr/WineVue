@@ -1,34 +1,14 @@
 <template>
     <div id="inventory-list">
-        <div v-if="error">
-            {{error}}
-        </div>
-        <wine-list :wines="wines" />
+        <wine-list />
     </div>
 </template>
 
 <script>
-import wineService from '../services/wines';
 import WineList from './WineList.vue'
 
 export default {
     name: 'WishList',
-    data () {
-        return {
-            wines: [],
-            error: ''
-        }
-    },
-
-    created () {
-        wineService.get('wishlist')
-            .then(response => {
-                this.wines = response.data.Wines
-            })
-            .catch(e => {
-                this.error = e
-            });
-    },
     components: {
         WineList    
     }
