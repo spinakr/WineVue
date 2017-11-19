@@ -13,6 +13,7 @@ let start connectionString =
                 pathRegex @"/(.*)\.(css|png|gif|jpg|js|map)" >=> Files.browseHome
                 path "/api/wines/inventory" >=> Wines.getAllWines connectionString
                 path "/api/wines/wishlist" >=> Wines.getAllWines connectionString
+                path "/api/wines/archive" >=> Wines.getAllWines connectionString
             ]
             POST >=> choose [
                 path "/api/wines/" >=> Wines.addNewWine

@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import App from './App'
 import InventoryList from './components/InventoryList'
 import WishList from './components/WishList'
+import ArchiveList from './components/ArchiveList'
 import 'font-awesome/css/font-awesome.min.css';
 
 Vue.use(VueRouter);
@@ -17,6 +18,11 @@ const router = new VueRouter({
       name: 'wishlist',
       path: '/wishlist',
       component: WishList
+    },
+    {
+      name: 'archive',
+      path: '/archive',
+      component: ArchiveList
     }
   ]
 })
