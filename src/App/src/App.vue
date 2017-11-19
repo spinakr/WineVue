@@ -1,19 +1,19 @@
 <template>
   <div id="app">
-    <AppHeader />
     <div id="view-container">
       <router-view></router-view>
     </div>
+    <navigation />
   </div>
 </template>
 
 <script>
-import AppHeader from "./components/AppHeader.vue";
+import navigation from "./components/Navigation.vue";
 
 export default {
   name: "app",
   components: {
-    AppHeader
+    navigation
   }
 };
 </script>

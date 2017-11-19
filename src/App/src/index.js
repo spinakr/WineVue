@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import App from './App'
 import InventoryList from './components/InventoryList'
 import WishList from './components/WishList'
+import 'font-awesome/css/font-awesome.min.css';
 
 Vue.use(VueRouter);
 
