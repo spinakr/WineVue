@@ -21,10 +21,11 @@ let start connectionString =
         ]
 
     let appPath =
-        let path = Path.Combine("..","app", "dist")
-        if Directory.Exists path 
-        then (path |> Path.GetFullPath)
-        else (path |> Path.GetFullPath)
+        let devPath = Path.Combine("..","app", "dist")
+        let prodPath = Path.Combine(".","app")
+        if Directory.Exists devPath
+        then (devPath |> Path.GetFullPath)
+        else (prodPath |> Path.GetFullPath)
 
 
     let config =
