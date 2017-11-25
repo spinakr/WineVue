@@ -10,6 +10,7 @@ build/
 paket-files/
 packages/
 TestResults/
+.fake/
 
 # globs
 Makefile.in
