@@ -31,20 +31,33 @@ Target "Clean" ( fun _ ->
     CleanDirs [buildPath; webAppBuildPath]
 )
 
-Target "BuildWebServer" (fun _ ->
-    let buildArgs = "build -o " + buildPath
-    runDotnet webServerPath buildArgs
-)
-
-Target "InstallWebApp" (fun _ -> 
+Target "InstallApp" (fun _ -> 
     runYarn webAppPath ""
 )
 
-Target "BuildWebApp" (fun _ ->
+Target "BuildApp" (fun _ ->
     runYarn webAppPath "build"
     CopyDir (buildPath + "/app") webAppBuildPath allFiles
 )
 
+Target "BuildServer" (fun _ ->
+    let buildArgs = "build -o " + buildPath
+    runDotnet webServerPath buildArgs
+)
+
+Target "TestApp" (fun _ -> 
+    ()
+)
+
+Target "TestServer" (fun _ -> 
+    ()
+)
+
+Target "CreateDockerImage" (fun _ -> 
+    ()
+)
+
+//Run for development
 Target "Run" (fun _ ->
     let runWebServer = async { runDotnet webServerPath "watch run" }
     let runWebApp = async { runYarn webAppPath "start" }
@@ -62,13 +75,18 @@ Target "Run" (fun _ ->
 Target "Build" DoNothing
 
 "Clean"
-    ==> "BuildWebServer"
-    ==> "InstallWebApp"
-    ==> "BuildWebApp"
-    ==> "Build"
+    ==> "InstallApp"
+    ==> "BuildApp"
+    ==> "BuildServer"
+    ==> "TestApp"
+    ==> "TestServer"
+    ==> "CreateDockerImage"
 
-"InstallWebApp"
+"InstallApp"
     ==> "Run"
+
+"BuildServer"
+    ==>"Build"
 
 
 RunTargetOrDefault "Build"

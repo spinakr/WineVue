@@ -10,7 +10,9 @@ let start connectionString =
         choose [
             GET >=> choose [
                 path "/" >=> Files.browseFileHome "index.html"
-                pathRegex @"/(.*)\.(css|png|gif|jpg|js|map)" >=> Files.browseHome
+                pathRegex @"/(.*)\.(css|png|gif|jpg|js|map|ico)" >=> Files.browseHome
+                pathRegex @"/assets/fonts/(.*)\.(woff|woff2|ttf)" >=> Files.browseHome
+                
                 path "/api/wines/inventory" >=> Wines.getAllWines connectionString
                 path "/api/wines/wishlist" >=> Wines.getAllWines connectionString
                 path "/api/wines/archive" >=> Wines.getAllWines connectionString
