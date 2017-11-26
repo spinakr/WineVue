@@ -19,12 +19,15 @@ let getDefault userName = async {
     return wineList
 }
 
-type AzureConnection = 
-    | AzureConnection of string
+type AzureConnection = {connectionString: string; tableName: string}
 
-let getWinesTable (AzureConnection connectionString) = async {
-    let client = (CloudStorageAccount.Parse connectionString).CreateCloudTableClient()
-    let table = client.GetTableReference "winestest"
+type StorageConnection = 
+    | AzureConnection of AzureConnection
+    | DefaultConnection
+
+let getWinesTable connection = async {
+    let client = (CloudStorageAccount.Parse connection.connectionString).CreateCloudTableClient()
+    let table = client.GetTableReference connection.tableName
     let rec createTableSafe() = async {
         try
         do! table.CreateIfNotExistsAsync() |> Async.AwaitTask |> Async.Ignore
@@ -35,9 +38,9 @@ let getWinesTable (AzureConnection connectionString) = async {
     do! createTableSafe()
     return table }
 
-let getWineListFromDB connectionString userName = async {
+let getWineListFromDB connection userName = async {
     let! results = async {
-        let! table = getWinesTable connectionString
+        let! table = getWinesTable connection
         let query = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, userName)           
         return! table.ExecuteQuerySegmentedAsync(TableQuery(FilterString = query), null) |> Async.AwaitTask }
     return
@@ -50,9 +53,9 @@ let getWineListFromDB connectionString userName = async {
 }
 
                      
-let getWineList connectionString userName = 
-    match connectionString with
-        | Some cs -> getWineListFromDB cs userName
-        | None -> getDefault userName
+let getWineList connection userName = 
+    match connection with 
+    | DefaultConnection -> getDefault userName
+    | AzureConnection conn -> getWineListFromDB conn userName
 
 
