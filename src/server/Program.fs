@@ -12,17 +12,14 @@ let main args =
         |> (fun x -> 
             match x with
             |Some _ -> x
-            |None -> Some (Environment.GetEnvironmentVariable("WINEVUE_AZURE_CONNECTION")))
+            |None ->  match Environment.GetEnvironmentVariable("WINEVUE_AZURE_CONNECTION") with
+                      | null -> None
+                      | value -> Some value)
     
     let tableName = 
-        args 
-        |> List.tryFind(fun arg -> arg.StartsWith "AzureTableName=")
-        |> Option.map(fun arg ->
-                arg.Substring "AzureTableName=".Length)
-        |> (fun n -> 
-            match n with 
-            |Some name -> name
-            |None -> "winestest")
+        match Environment.GetEnvironmentVariable("WINEVUE_TABLE_NAME") with
+        | null -> "winestest"
+        | value -> value
 
     let connection = 
         match connectionString with

@@ -7,6 +7,7 @@ notes.txt
 [Oo]bj/
 [Bb]in/
 build/
+deploy/
 paket-files/
 packages/
 TestResults/

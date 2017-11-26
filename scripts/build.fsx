@@ -1,13 +1,14 @@
-open System.Runtime.InteropServices
 #r "../packages/FAKE/tools/FakeLib.dll"
 
 open Fake
 open System
 
-let webServerPath = "../src/api/" |> FullName
+let webServerPath = "../src/server/" |> FullName
 let webAppPath = "../src/app/" |> FullName
 let webAppBuildPath = "../src/app/dist/" |> FullName
-let buildPath = "./build" |> FullName
+let deployDir = "./deploy" |> FullName
+
+let mutable dotnetExePath = "dotnet"
 
 let runDotnet workingDir args =
     let result =
@@ -26,9 +27,12 @@ let runYarn workingDir args =
     if result <> 0 then failwithf "yarn %s failed" args
 
 //-----Tasks-----
+Target "InstallDotNetCore" (fun _ ->
+    dotnetExePath <- DotNetCli.InstallDotNetSDK "2.0.3"
+)
 
 Target "Clean" ( fun _ -> 
-    CleanDirs [buildPath; webAppBuildPath]
+    CleanDirs [deployDir; webAppBuildPath]
 )
 
 Target "InstallApp" (fun _ -> 
@@ -37,12 +41,10 @@ Target "InstallApp" (fun _ ->
 
 Target "BuildApp" (fun _ ->
     runYarn webAppPath "build"
-    CopyDir (buildPath + "/app") webAppBuildPath allFiles
 )
 
 Target "BuildServer" (fun _ ->
-    let buildArgs = "build -o " + buildPath
-    runDotnet webServerPath buildArgs
+    runDotnet webServerPath "build"
 )
 
 Target "TestApp" (fun _ -> 
@@ -53,8 +55,25 @@ Target "TestServer" (fun _ ->
     ()
 )
 
+Target "PublishApp" (fun _ -> 
+    let buildArgs = "publish -c Release -o \"" + FullName deployDir + "\""
+    runDotnet webServerPath buildArgs
+    CopyDir (deployDir + "/app") webAppBuildPath allFiles
+)
+
+let dockerUser = "sp1nakr"
+let dockerImageName = "winevue"
 Target "CreateDockerImage" (fun _ -> 
-    ()
+    if String.IsNullOrEmpty dockerUser then
+        failwithf "docker username not given."
+    if String.IsNullOrEmpty dockerImageName then
+        failwithf "docker image Name not given."
+    let result =
+        ExecProcess (fun info ->
+            info.FileName <- "docker"
+            info.UseShellExecute <- false
+            info.Arguments <- sprintf "build -t %s/%s ." dockerUser dockerImageName) TimeSpan.MaxValue
+    if result <> 0 then failwith "Docker build failed"
 )
 
 //Run for development
@@ -75,11 +94,13 @@ Target "Run" (fun _ ->
 Target "Build" DoNothing
 
 "Clean"
+    ==> "InstallDotNetCore"
     ==> "InstallApp"
     ==> "BuildApp"
     ==> "BuildServer"
     ==> "TestApp"
     ==> "TestServer"
+    ==> "PublishApp"
     ==> "CreateDockerImage"
 
 "InstallApp"
