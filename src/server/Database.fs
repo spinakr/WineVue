@@ -9,10 +9,18 @@ let getDefault userName = async {
     let wineList = 
         { UserName = userName
           Wines = 
-            [ { Name = "TestWine"
+            [ { Id = "12321344"
+                Name = "TestWine"
+                Country = "France"
+                Area = "Bordeaux"
+                Type = "White"
                 Fruit = "Chardonnay"
                 Price = "100" };
-              { Name = "TestWine2"
+              { Id = "123213123"
+                Name = "TestWine2"
+                Type = "White"
+                Country = "France"
+                Area = "Bordeaux"
                 Fruit = "Pinor Noir"
                 Price = "200" }]
         }
@@ -38,6 +46,18 @@ let getWinesTable connection = async {
     do! createTableSafe()
     return table }
 
+let convertWineType (wineString: string) = 
+    let redWineStrings = ["Rødvin"]
+    let whiteWineStrings = ["Hvitvin"]
+    let sparklingWineStrings = ["Champagne, brut"; "Musserende vin"]
+
+    match wineString with
+    | wineString when (redWineStrings |> List.contains wineString) -> "red"
+    | wineString when (whiteWineStrings |> List.contains wineString) -> "white"
+    | wineString when (sparklingWineStrings |> List.contains wineString) -> "sparkling"
+    | _ -> "unknown"
+
+
 let getWineListFromDB connection userName = async {
     let! results = async {
         let! table = getWinesTable connection
@@ -47,8 +67,12 @@ let getWineListFromDB connection userName = async {
         { UserName = userName
           Wines =
             [ for result in results -> 
-                { Name = result.Properties.["Name"].StringValue
+                { Id = result.Properties.["VinmonopoletId"].StringValue
+                  Name = result.Properties.["Name"].StringValue
                   Price = string result.Properties.["Price"].StringValue
+                  Country = string result.Properties.["Country"].StringValue
+                  Area = string result.Properties.["Area"].StringValue
+                  Type = convertWineType result.Properties.["Type"].StringValue
                   Fruit = string result.Properties.["Fruit"].StringValue } ] } 
 }
 

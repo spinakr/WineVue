@@ -1,6 +1,5 @@
 <template>
   <div id="footer">
-
     <router-link to="/">
       <i class="fa fa-home fa-3x nav-item"></i>
     </router-link>
@@ -34,7 +33,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: lightgray;
+
+  background-color: rgba(117, 190, 218, 0.5);
 }
 
 .nav-item {
