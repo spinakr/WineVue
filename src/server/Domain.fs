@@ -3,6 +3,7 @@ namespace Domain
 type Wine =
     { 
         Id: string
+        VinmonopoletId: string
         Name : string
         Fruit : string
         Type: string

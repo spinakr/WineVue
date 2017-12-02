@@ -23,7 +23,7 @@ let wines =
     |> Array.map (fun s -> s.Split(';')) 
     |> fun file -> file.[1..]
     |> Array.map(fun line -> 
-        {Id=line.[1]; Name=line.[2]; Country=line.[8]; Area=line.[9]; Type=convertWineType line.[6]; Fruit="90% Cabernet Sauvignon, 10% Cabernet Franc"; Price=line.[11]; Producer=line.[7]})
+        {Id=line.[1]; VinmonopoletId=line.[4]; Name=line.[2]; Country=line.[8]; Area=line.[9]; Type=convertWineType line.[6]; Fruit="90% Cabernet Sauvignon, 10% Cabernet Franc"; Price=line.[11]; Producer=line.[7]})
     |> Array.toList
 
 let getDefault userName = async {
@@ -59,7 +59,8 @@ let getWinesTable connection = async {
     return table }
 
 let mapWineToEntity (result: DynamicTableEntity) = 
-    { Id = result.Properties.["VinmonopoletId"].StringValue
+    { Id = result.Properties.["RowKey"].StringValue
+      VinmonopoletId = result.Properties.["VinmonopoletId"].StringValue
       Name = result.Properties.["Name"].StringValue
       Price = string result.Properties.["Price"].StringValue
       Country = string result.Properties.["Country"].StringValue
