@@ -17,9 +17,14 @@ let main args =
                       | value -> Some value)
     
     let tableName = 
-        match Environment.GetEnvironmentVariable("WINEVUE_TABLE_NAME") with
-        | null -> "winestest"
-        | value -> value
+        args 
+        |> List.tryFind(fun arg -> arg.StartsWith "WineTableName=")
+        |> (fun x -> 
+            match x with
+            |Some x -> x.Substring "WineTableName=".Length
+            |None ->  match Environment.GetEnvironmentVariable("WINEVUE_TABLE_NAME") with
+                      | null -> "winestest"
+                      | value -> value)
 
     let connection = 
         match connectionString with

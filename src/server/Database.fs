@@ -1,28 +1,36 @@
 module Database
 
+open System.IO
 open Domain
 open Microsoft.WindowsAzure.Storage
 open Microsoft.WindowsAzure.Storage.Table
 
+let convertWineType (wineString: string) = 
+    let redWineStrings = ["Rødvin"]
+    let whiteWineStrings = ["Hvitvin"]
+    let sparklingWineStrings = ["Champagne, brut"; "Musserende vin"; "Champagne"]
+
+    match wineString with
+    | wineString when (redWineStrings |> List.contains wineString) -> "red"
+    | wineString when (whiteWineStrings |> List.contains wineString) -> "white"
+    | wineString when (sparklingWineStrings |> List.contains wineString) -> "sparkling"
+    | _ -> "unknown"
+
 let getDefault userName = async {
     printfn "Getting default wine list"
+    let filePath = "./demo-data/demo-wines.csv"
+
+    let wines = 
+        File.ReadAllLines(filePath)
+        |> Array.map (fun s -> s.Split(';')) 
+        |> fun file -> file.[1..]
+        |> Array.map(fun line -> 
+            {Id=line.[4]; Name=line.[2]; Country=line.[8]; Area=line.[9]; Type=convertWineType line.[6]; Fruit="90% Cabernet Sauvignon, 10% Cabernet Franc"; Price=line.[11]})
+        |> Array.toList
+
     let wineList = 
         { UserName = userName
-          Wines = 
-            [ { Id = "12321344"
-                Name = "TestWine"
-                Country = "France"
-                Area = "Bordeaux"
-                Type = "White"
-                Fruit = "Chardonnay"
-                Price = "100" };
-              { Id = "123213123"
-                Name = "TestWine2"
-                Type = "White"
-                Country = "France"
-                Area = "Bordeaux"
-                Fruit = "Pinor Noir"
-                Price = "200" }]
+          Wines = wines
         }
     return wineList
 }
@@ -45,17 +53,6 @@ let getWinesTable connection = async {
             
     do! createTableSafe()
     return table }
-
-let convertWineType (wineString: string) = 
-    let redWineStrings = ["Rødvin"]
-    let whiteWineStrings = ["Hvitvin"]
-    let sparklingWineStrings = ["Champagne, brut"; "Musserende vin"]
-
-    match wineString with
-    | wineString when (redWineStrings |> List.contains wineString) -> "red"
-    | wineString when (whiteWineStrings |> List.contains wineString) -> "white"
-    | wineString when (sparklingWineStrings |> List.contains wineString) -> "sparkling"
-    | _ -> "unknown"
 
 
 let getWineListFromDB connection userName = async {
