@@ -16,6 +16,9 @@ let start connectionString =
                 path "/api/wines/inventory" >=> Wines.getAllWines connectionString
                 path "/api/wines/wishlist" >=> Wines.getAllWines connectionString
                 path "/api/wines/archive" >=> Wines.getAllWines connectionString
+                
+                pathScan "/api/wines/%s" (fun (id) -> 
+                 context (fun c -> Wines.getWine connectionString c id))
             ]
             POST >=> choose [
                 path "/api/wines/" >=> Wines.addNewWine

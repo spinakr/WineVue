@@ -16,23 +16,27 @@ let convertWineType (wineString: string) =
     | wineString when (sparklingWineStrings |> List.contains wineString) -> "sparkling"
     | _ -> "unknown"
 
+let filePath = "./demo-data/demo-wines.csv"
+
+let wines = 
+    File.ReadAllLines(filePath)
+    |> Array.map (fun s -> s.Split(';')) 
+    |> fun file -> file.[1..]
+    |> Array.map(fun line -> 
+        {Id=line.[1]; Name=line.[2]; Country=line.[8]; Area=line.[9]; Type=convertWineType line.[6]; Fruit="90% Cabernet Sauvignon, 10% Cabernet Franc"; Price=line.[11]; Producer=line.[7]})
+    |> Array.toList
+
 let getDefault userName = async {
-    printfn "Getting default wine list"
-    let filePath = "./demo-data/demo-wines.csv"
-
-    let wines = 
-        File.ReadAllLines(filePath)
-        |> Array.map (fun s -> s.Split(';')) 
-        |> fun file -> file.[1..]
-        |> Array.map(fun line -> 
-            {Id=line.[4]; Name=line.[2]; Country=line.[8]; Area=line.[9]; Type=convertWineType line.[6]; Fruit="90% Cabernet Sauvignon, 10% Cabernet Franc"; Price=line.[11]; Producer=line.[7]})
-        |> Array.toList
-
     let wineList = 
         { UserName = userName
           Wines = wines
         }
     return wineList
+}
+
+let getWineDefault id = async {
+    let wine = wines |> Seq.find (fun x -> (x.Id = id))
+    return wine
 }
 
 type AzureConnection = {connectionString: string; tableName: string}
@@ -54,24 +58,36 @@ let getWinesTable connection = async {
     do! createTableSafe()
     return table }
 
+let mapWineToEntity (result: DynamicTableEntity) = 
+    { Id = result.Properties.["VinmonopoletId"].StringValue
+      Name = result.Properties.["Name"].StringValue
+      Price = string result.Properties.["Price"].StringValue
+      Country = string result.Properties.["Country"].StringValue
+      Area = string result.Properties.["Area"].StringValue
+      Type = convertWineType result.Properties.["Type"].StringValue
+      Producer = convertWineType result.Properties.["Producer"].StringValue
+      Fruit = string result.Properties.["Fruit"].StringValue } 
+
+let mapWinesToEntity (results: TableQuerySegment) = 
+    [ for result in results ->  mapWineToEntity result ]
+
+
+let getWineFromDB connection id = async {
+    let! results = async {
+        let! table = getWinesTable connection
+        let query = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.Equal, id)           
+        return! table.ExecuteQuerySegmentedAsync(TableQuery(FilterString = query), null) |> Async.AwaitTask }
+    return mapWineToEntity (Seq.exactlyOne results)
+}
 
 let getWineListFromDB connection userName = async {
     let! results = async {
         let! table = getWinesTable connection
         let query = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, userName)           
         return! table.ExecuteQuerySegmentedAsync(TableQuery(FilterString = query), null) |> Async.AwaitTask }
-    return
+    return 
         { UserName = userName
-          Wines =
-            [ for result in results -> 
-                { Id = result.Properties.["VinmonopoletId"].StringValue
-                  Name = result.Properties.["Name"].StringValue
-                  Price = string result.Properties.["Price"].StringValue
-                  Country = string result.Properties.["Country"].StringValue
-                  Area = string result.Properties.["Area"].StringValue
-                  Type = convertWineType result.Properties.["Type"].StringValue
-                  Producer = convertWineType result.Properties.["Producer"].StringValue
-                  Fruit = string result.Properties.["Fruit"].StringValue } ] } 
+          Wines = mapWinesToEntity results } 
 }
 
                      
@@ -80,4 +96,8 @@ let getWineList connection userName =
     | DefaultConnection -> getDefault userName
     | AzureConnection conn -> getWineListFromDB conn userName
 
+let getWine connection id = 
+    match connection with 
+    | DefaultConnection -> getWineDefault id
+    | AzureConnection conn -> getWineFromDB conn id
 

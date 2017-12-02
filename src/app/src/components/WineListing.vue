@@ -1,19 +1,21 @@
 <template>
-  <div class="wine-listing">
-    <div class="left-column">
-      <div class="wine-prop"> {{wine.Name}}</div>
-      <div class="wine-prop">{{wine.Producer}}</div>
-      <div class="wine-prop">{{wine.Price}}</div>
-    </div>
-    <div class="right-column">
-      <div>
-        <img v-bind:src="wineIconPath" height="50" width="50">
+  <router-link v-bind:to="wine.Id">
+    <div class="wine-listing">
+      <div class="left-column">
+        <div class="wine-prop"> {{wine.Name}}</div>
+        <div class="wine-prop">{{wine.Producer}}</div>
+        <div class="wine-prop">{{wine.Price}}</div>
       </div>
-      <div>
-        <img v-bind:src="flagPath" height="50" width="50">
+      <div class="right-column">
+        <div>
+          <img v-bind:src="wineIconPath" height="50" width="50">
+        </div>
+        <div>
+          <img v-bind:src="flagPath" height="50" width="50">
+        </div>
       </div>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <script>
