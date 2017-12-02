@@ -2,7 +2,7 @@
   <div class="wine-listing">
     <div class="left-column">
       <div class="wine-prop"> {{wine.Name}}</div>
-      <div class="wine-prop">{{wine.Fruit}}</div>
+      <div class="wine-prop">{{wine.Producer}}</div>
       <div class="wine-prop">{{wine.Price}}</div>
     </div>
     <div class="right-column">
@@ -48,6 +48,7 @@ export default {
 
 .wine-prop {
   white-space: nowrap;
+  padding: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
 }

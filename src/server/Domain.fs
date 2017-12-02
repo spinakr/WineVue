@@ -9,6 +9,7 @@ type Wine =
         Country: string
         Area: string
         Price : string
+        Producer : string
     }
 
 type WineList =

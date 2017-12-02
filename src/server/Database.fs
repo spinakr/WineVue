@@ -25,7 +25,7 @@ let getDefault userName = async {
         |> Array.map (fun s -> s.Split(';')) 
         |> fun file -> file.[1..]
         |> Array.map(fun line -> 
-            {Id=line.[4]; Name=line.[2]; Country=line.[8]; Area=line.[9]; Type=convertWineType line.[6]; Fruit="90% Cabernet Sauvignon, 10% Cabernet Franc"; Price=line.[11]})
+            {Id=line.[4]; Name=line.[2]; Country=line.[8]; Area=line.[9]; Type=convertWineType line.[6]; Fruit="90% Cabernet Sauvignon, 10% Cabernet Franc"; Price=line.[11]; Producer=line.[7]})
         |> Array.toList
 
     let wineList = 
@@ -70,6 +70,7 @@ let getWineListFromDB connection userName = async {
                   Country = string result.Properties.["Country"].StringValue
                   Area = string result.Properties.["Area"].StringValue
                   Type = convertWineType result.Properties.["Type"].StringValue
+                  Producer = convertWineType result.Properties.["Producer"].StringValue
                   Fruit = string result.Properties.["Fruit"].StringValue } ] } 
 }
 
