@@ -12,12 +12,6 @@ Vue.use(VueRouter);
 const router = new VueRouter({
   routes: [
     {
-      name: "wine-info",
-      path: "/:id",
-      component: WineDetails,
-      props: true
-    },
-    {
       name: "inventory",
       path: "/",
       component: InventoryList
@@ -31,6 +25,12 @@ const router = new VueRouter({
       name: "archive",
       path: "/archive",
       component: ArchiveList
+    },
+    {
+      name: "wine-info",
+      path: "/:id",
+      component: WineDetails,
+      props: true
     }
   ]
 });
