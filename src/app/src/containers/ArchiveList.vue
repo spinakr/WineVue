@@ -5,10 +5,11 @@
 </template>
 
 <script>
-import WineList from "./WineList.vue";
+import WineList from "../components/WineList.vue";
 
 export default {
-  name: "WishList",
+  name: "InventoryList",
+
   components: {
     WineList
   }

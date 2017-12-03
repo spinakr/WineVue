@@ -10,7 +10,7 @@ let start connectionString =
         choose [
             GET >=> choose [
                 path "/" >=> Files.browseFileHome "index.html"
-                pathRegex @"/(.*)\.(css|png|gif|jpg|js|map|ico)" >=> Files.browseHome
+                pathRegex @"/(.*)\.(css|png|gif|jpg|js|map|ico|svg)" >=> Files.browseHome
                 pathRegex @"/assets/fonts/(.*)\.(woff|woff2|ttf)" >=> Files.browseHome
                 
                 path "/api/wines/inventory" >=> Wines.getAllWines connectionString
@@ -36,7 +36,7 @@ let start connectionString =
     let config =
         { defaultConfig with 
             homeFolder = Some appPath
-            bindings = [ HttpBinding.createSimple HTTP "0.0.0.0" 8083 ]
+            bindings = [ HttpBinding.createSimple HTTP "0.0.0.0" 8080 ]
         }
     
     startWebServer config app

@@ -59,6 +59,7 @@ Target "PublishApp" (fun _ ->
     let buildArgs = "publish -c Release -o \"" + FullName deployDir + "\""
     runDotnet webServerPath buildArgs
     CopyDir (deployDir + "/app") webAppBuildPath allFiles
+    CopyDir (deployDir + "/demo-data") (webServerPath + "/demo-data/") allFiles
 )
 
 let dockerUser = "sp1nakr"
