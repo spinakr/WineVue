@@ -62,23 +62,36 @@ Target "PublishApp" (fun _ ->
     CopyDir (deployDir + "/demo-data") (webServerPath + "/demo-data/") allFiles
 )
 
-let dockerUser = "sp1nakr"
-let dockerImageName = "winevue"
 Target "CreateDockerImage" (fun _ -> 
-    if String.IsNullOrEmpty dockerUser then
-        failwithf "docker username not given."
-    if String.IsNullOrEmpty dockerImageName then
-        failwithf "docker image Name not given."
     let result =
         ExecProcess (fun info ->
             info.FileName <- "docker"
             info.UseShellExecute <- false
-            info.Arguments <- sprintf "build -t %s/%s ." dockerUser dockerImageName) TimeSpan.MaxValue
+            info.Arguments <- "build -t sp1nakr/winevue .") TimeSpan.MaxValue
     if result <> 0 then failwith "Docker build failed"
 )
 
+Target "RunDockerImage" (fun _ -> 
+    let tableName = 
+        match environVarOrNone "WINEVUE_TABLE_NAME" with 
+        | Some tableName -> tableName
+        | _ -> failwith "Set environment varibles WINEVUE_TABLE_NAME and WINEVUE_TABLE_NAME"
+
+    let azureConnection = 
+        match environVarOrNone "WINEVUE_AZURE_CONNECTION" with 
+        | Some tableName -> tableName
+        | _ -> failwith "Set environment varibles WINEVUE_TABLE_NAME and WINEVUE_AZURE_CONNECTION"
+
+    let result =
+        ExecProcess (fun info ->
+            info.FileName <- "docker"
+            info.UseShellExecute <- false
+            info.Arguments <- sprintf "run -d -p 80:8080 --rm --name winevue -e WINEVUE_TABLE_NAME=\"%s\" -e WINEVUE_AZURE_CONNECTION=\"%s\" -it sp1nakr/winevue" tableName azureConnection ) TimeSpan.MaxValue
+    if result <> 0 then failwith "Docker run failed"
+)
+
 //Run for development
-Target "Run" (fun _ ->
+Target "RunDev" (fun _ ->
     let runWebServer = async { runDotnet webServerPath "watch run" }
     let runWebApp = async { runYarn webAppPath "start" }
     let openBrowser = async {
@@ -103,9 +116,10 @@ Target "Build" DoNothing
     ==> "TestServer"
     ==> "PublishApp"
     ==> "CreateDockerImage"
+    ==> "RunDockerImage"
 
 "InstallApp"
-    ==> "Run"
+    ==> "RunDev"
 
 "BuildServer"
     ==>"Build"

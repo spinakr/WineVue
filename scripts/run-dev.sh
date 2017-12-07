@@ -4,4 +4,4 @@ exit_code=$?
 if [ $exit_code -ne 0 ]; then
     exit $exit_code
 fi
-mono ../packages/FAKE/tools/FAKE.exe run --fsiargs -d:MONO build.fsx
+mono ../packages/FAKE/tools/FAKE.exe RunDev --fsiargs -d:MONO build.fsx
