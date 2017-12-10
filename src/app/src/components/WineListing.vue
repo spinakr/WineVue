@@ -37,6 +37,7 @@ export default {
   height: 100px;
   padding: 5px;
   border: solid;
+  color: #586e75;
 }
 
 .left-column {

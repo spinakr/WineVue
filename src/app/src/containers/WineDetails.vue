@@ -7,7 +7,7 @@
       <div>{{wine.Price}}</div>
     </div>
     <div class="right-column">
-      <img v-if="imageUrl" v-bind:src="imageUrl" alt="wine image">
+      <img v-bind:src="imageUrl" alt="wine image">
     </div>
   </div>
 </template>

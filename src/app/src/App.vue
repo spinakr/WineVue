@@ -25,6 +25,7 @@ body,
   height: 100%;
   width: 100%;
   font-family: "Avenir", Helvetica, Arial, sans-serif;
+  background: #fdf6e3;
 }
 
 #view-container {
