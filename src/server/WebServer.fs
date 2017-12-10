@@ -13,9 +13,9 @@ let start connectionString =
                 pathRegex @"/(.*)\.(css|png|gif|jpg|js|map|ico|svg)" >=> Files.browseHome
                 pathRegex @"/assets/fonts/(.*)\.(woff|woff2|ttf)" >=> Files.browseHome
                 
-                path "/api/wines/inventory" >=> Wines.getAllWines connectionString
-                path "/api/wines/wishlist" >=> Wines.getAllWines connectionString
-                path "/api/wines/archive" >=> Wines.getAllWines connectionString
+                path "/api/wines/inventory" >=> Wines.getAllWines connectionString "instock"
+                path "/api/wines/wishlist" >=> Wines.getAllWines connectionString "shoppinglist"
+                path "/api/wines/archive" >=> Wines.getAllWines connectionString "archive"
                 
                 pathScan "/api/wines/%s" (fun (id) -> 
                  context (fun c -> Wines.getWine connectionString c id))

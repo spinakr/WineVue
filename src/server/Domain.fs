@@ -4,6 +4,7 @@ type Wine =
     { 
         Id: string
         VinmonopoletId: string
+        Status: string
         Name : string
         Fruit : string
         Type: string

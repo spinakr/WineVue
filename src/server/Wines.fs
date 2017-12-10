@@ -3,8 +3,8 @@ module Api.Wines
 open Suave
 open Newtonsoft.Json
 
-let getAllWines connectionString (ctx: HttpContext) = async {
-    let! wineList = Database.getWineList connectionString "IngridAnders"
+let getAllWines connectionString status (ctx: HttpContext) = async {
+    let! wineList = Database.getWineList connectionString "IngridAnders" status
     return! Successful.OK (JsonConvert.SerializeObject(wineList)) ctx
 }
 

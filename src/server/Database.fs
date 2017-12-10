@@ -23,13 +23,13 @@ let wines =
     |> Array.map (fun s -> s.Split(';')) 
     |> fun file -> file.[1..]
     |> Array.map(fun line -> 
-        {Id=line.[1]; VinmonopoletId=line.[4]; Name=line.[2]; Country=line.[8]; Area=line.[9]; Type=convertWineType line.[6]; Fruit="90% Cabernet Sauvignon, 10% Cabernet Franc"; Price=line.[11]; Producer=line.[7]})
+        {Id=line.[1]; VinmonopoletId=line.[4]; Status=line.[3]; Name=line.[2]; Country=line.[8]; Area=line.[9]; Type=convertWineType line.[6]; Fruit="90% Cabernet Sauvignon, 10% Cabernet Franc"; Price=line.[11]; Producer=line.[7]})
     |> Array.toList
 
-let getDefault userName = async {
+let getDefault userName status = async {
     let wineList = 
         { UserName = userName
-          Wines = wines
+          Wines = wines |> List.filter (fun x -> x.Status = status) 
         }
     return wineList
 }
@@ -67,6 +67,7 @@ let mapWineToEntity (result: DynamicTableEntity) =
       Area = string result.Properties.["Area"].StringValue
       Type = convertWineType result.Properties.["Type"].StringValue
       Producer = convertWineType result.Properties.["Producer"].StringValue
+      Status = result.Properties.["Status"].StringValue
       Fruit = string result.Properties.["Fruit"].StringValue } 
 
 let mapWinesToEntity (results: TableQuerySegment) = 
@@ -81,21 +82,21 @@ let getWineFromDB connection id = async {
     return mapWineToEntity (Seq.exactlyOne results)
 }
 
-let getWineListFromDB connection userName = async {
+let getWineListFromDB connection userName status = async {
     let! results = async {
         let! table = getWinesTable connection
         let query = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, userName)           
         return! table.ExecuteQuerySegmentedAsync(TableQuery(FilterString = query), null) |> Async.AwaitTask }
     return 
         { UserName = userName
-          Wines = mapWinesToEntity results } 
+          Wines = (mapWinesToEntity results) |> List.filter (fun x -> x.Status = status) } 
 }
 
                      
-let getWineList connection userName = 
+let getWineList connection userName status = 
     match connection with 
-    | DefaultConnection -> getDefault userName
-    | AzureConnection conn -> getWineListFromDB conn userName
+    | DefaultConnection -> getDefault userName status
+    | AzureConnection conn -> getWineListFromDB conn userName status
 
 let getWine connection id = 
     match connection with 
