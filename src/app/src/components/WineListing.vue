@@ -1,5 +1,5 @@
 <template>
-  <router-link v-bind:to="wine.Id">
+  <router-link class="wine-link" v-bind:to="wine.Id">
     <div class="wine-listing">
       <div class="left-column">
         <div class="wine-prop"> {{wine.Name}}</div>
@@ -53,5 +53,12 @@ export default {
   padding: 2px;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+a:link,
+a:visited {
+  color: black;
+}
+a:hover {
+  color: darkblue;
 }
 </style>
