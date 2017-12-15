@@ -45,6 +45,7 @@ export default {
   border: solid;
   padding-left: 10px;
   padding-bottom: 10px;
+  background-color: white;
 }
 
 .left-column {

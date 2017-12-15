@@ -38,6 +38,7 @@ export default {
   padding: 5px;
   border: solid;
   color: #586e75;
+  background-color: white;
 }
 
 .left-column {
