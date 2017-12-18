@@ -8,6 +8,7 @@
     <Compile Include="Domain.fs" />
     <Compile Include="Database.fs" />
     <Compile Include="Wines.fs" />
+    <Compile Include="Comments.fs" />
     <Compile Include="WebServer.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

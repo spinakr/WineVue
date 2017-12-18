@@ -1,5 +1,13 @@
 namespace Domain
 
+type Comment = 
+    {
+        VinmonopoletId: string
+        Occation: string
+        ConsumptionDate: string
+        Note: string
+    }
+
 type Wine =
     { 
         Id: string
@@ -12,6 +20,9 @@ type Wine =
         Area: string
         Price : string
         Producer : string
+        Occation: string
+        ConsumptionDate: string
+        Note: string
     }
 
 type WineList =

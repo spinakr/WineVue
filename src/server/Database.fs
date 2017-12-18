@@ -23,7 +23,7 @@ let wines =
     |> Array.map (fun s -> s.Split(';')) 
     |> fun file -> file.[1..]
     |> Array.map(fun line -> 
-        {Id=line.[1]; VinmonopoletId=line.[4]; Status=line.[3]; Name=line.[2]; Country=line.[8]; Area=line.[9]; Type=convertWineType line.[6]; Fruit="90% Cabernet Sauvignon, 10% Cabernet Franc"; Price=line.[11]; Producer=line.[7]})
+        {Id=line.[1]; VinmonopoletId=line.[4]; Status=line.[3]; Name=line.[2]; Country=line.[8]; Area=line.[9]; Type=convertWineType line.[6]; Fruit="90% Cabernet Sauvignon, 10% Cabernet Franc"; Price=line.[11]; Producer=line.[7]; Occation=line.[17]; Note=line.[16]; ConsumptionDate=line.[15]})
     |> Array.toList
 
 let getDefault userName status = async {
@@ -37,6 +37,14 @@ let getDefault userName status = async {
 let getWineDefault id = async {
     let wine = wines |> Seq.find (fun x -> (x.Id = id))
     return wine
+}
+
+let getCommentsDefault vinmonopoletId = async {
+    let comments = 
+        wines 
+        |> Seq.filter (fun x -> (x.VinmonopoletId = vinmonopoletId))
+        |> Seq.map (fun wine -> {VinmonopoletId = wine.VinmonopoletId; Occation = wine.Occation; Note=wine.Note; ConsumptionDate=wine.ConsumptionDate})
+    return comments
 }
 
 type AzureConnection = {connectionString: string; tableName: string}
@@ -68,6 +76,9 @@ let mapWineToEntity (result: DynamicTableEntity) =
       Type = convertWineType result.Properties.["Type"].StringValue
       Producer = convertWineType result.Properties.["Producer"].StringValue
       Status = result.Properties.["Status"].StringValue
+      Occation = result.Properties.["Occation"].StringValue
+      ConsumptionDate = result.Properties.["ConsumptionDate"].StringValue
+      Note = result.Properties.["Note"].StringValue
       Fruit = string result.Properties.["Fruit"].StringValue } 
 
 let mapWinesToEntity (results: TableQuerySegment) = 
@@ -92,6 +103,18 @@ let getWineListFromDB connection userName status = async {
           Wines = (mapWinesToEntity results) |> List.filter (fun x -> x.Status = status) } 
 }
 
+let getCommentsFromDB connection vinmonopoletId = async {
+    let! results = async {
+        let! table = getWinesTable connection
+        let query = TableQuery.GenerateFilterCondition("VinmonopoletId", QueryComparisons.Equal, vinmonopoletId)           
+        return! table.ExecuteQuerySegmentedAsync(TableQuery(FilterString = query), null) |> Async.AwaitTask }
+    return 
+        results |> Seq.map (fun result -> 
+            { VinmonopoletId = result.Properties.["VinmonopoletId"].StringValue
+              ConsumptionDate = result.Properties.["ConsumptionDate"].StringValue
+              Note = result.Properties.["Note"].StringValue
+              Occation = string result.Properties.["Occation"].StringValue } )
+}
                      
 let getWineList connection userName status = 
     match connection with 
@@ -103,3 +126,7 @@ let getWine connection id =
     | DefaultConnection -> getWineDefault id
     | AzureConnection conn -> getWineFromDB conn id
 
+let getComments connection vinmonopoletId = 
+    match connection with 
+    | DefaultConnection -> getCommentsDefault vinmonopoletId
+    | AzureConnection conn -> getCommentsFromDB conn vinmonopoletId
