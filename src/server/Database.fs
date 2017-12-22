@@ -66,20 +66,27 @@ let getWinesTable connection = async {
     do! createTableSafe()
     return table }
 
+let getPropertyFromTableEntity propName (result: DynamicTableEntity) =
+    match result.Properties.TryGetValue propName with
+      | true, value -> value.StringValue
+      | _           -> ""
+
+
 let mapWineToEntity (result: DynamicTableEntity) = 
-    { Id = result.Properties.["RowKey"].StringValue
-      VinmonopoletId = result.Properties.["VinmonopoletId"].StringValue
-      Name = result.Properties.["Name"].StringValue
-      Price = string result.Properties.["Price"].StringValue
-      Country = string result.Properties.["Country"].StringValue
-      Area = string result.Properties.["Area"].StringValue
-      Type = convertWineType result.Properties.["Type"].StringValue
-      Producer = convertWineType result.Properties.["Producer"].StringValue
-      Status = result.Properties.["Status"].StringValue
-      Occation = result.Properties.["Occation"].StringValue
-      ConsumptionDate = result.Properties.["ConsumptionDate"].StringValue
-      Note = result.Properties.["Note"].StringValue
-      Fruit = string result.Properties.["Fruit"].StringValue } 
+    { Id = result |> getPropertyFromTableEntity "RowKey"
+      VinmonopoletId = result |> getPropertyFromTableEntity "VinmonopoletId"
+      Name = result |> getPropertyFromTableEntity "Name"
+      Price =  result |> getPropertyFromTableEntity "Price"
+      Country = result |> getPropertyFromTableEntity "Country"
+      Area =  result |> getPropertyFromTableEntity "Area"
+      Type =  convertWineType (result |> getPropertyFromTableEntity "Type")
+      Producer = result |> getPropertyFromTableEntity "Producer"
+      Status =  result |> getPropertyFromTableEntity "Status"
+      Occation = result |> getPropertyFromTableEntity "Occation"
+      ConsumptionDate = result |> getPropertyFromTableEntity "ConsumptionDate"
+      Note = result |> getPropertyFromTableEntity "Note" 
+      Fruit = result |> getPropertyFromTableEntity "Fruit" } 
+
 
 let mapWinesToEntity (results: TableQuerySegment) = 
     [ for result in results ->  mapWineToEntity result ]
