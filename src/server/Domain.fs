@@ -2,7 +2,7 @@ namespace Domain
 
 type Comment = 
     {
-        VinmonopoletId: string
+        Id: string
         Occation: string
         ConsumptionDate: string
         Note: string

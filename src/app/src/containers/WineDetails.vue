@@ -1,10 +1,17 @@
 <template>
   <div class="wine-details">
+    <div v-if="error">
+      {{error}}
+    </div>
+
     <div class="left-column">
       <h3>Details</h3>
       <div> {{wine.Name}}</div>
       <div>{{wine.Producer}}</div>
       <div>{{wine.Price}}</div>
+
+
+      <wine-comments v-if="wine.VinmonopoletId" v-bind:vinmonopolet-id="wine.VinmonopoletId"></wine-comments>
     </div>
     <div class="right-column">
       <img v-bind:src="imageUrl" alt="wine image">
@@ -14,6 +21,7 @@
 
 <script>
 import wineService from "../services/wines";
+import WineComments from "./WineComments.vue";
 
 export default {
   name: "WineListing",
@@ -36,6 +44,9 @@ export default {
       .catch(e => {
         this.error = e;
       });
+  },
+  components: {
+    WineComments
   }
 };
 </script>
@@ -46,11 +57,12 @@ export default {
   padding-left: 10px;
   padding-bottom: 10px;
   background-color: white;
+  min-height: 400px;
 }
 
 .left-column {
   float: left;
-  width: 80%;
+  width: 75%;
 }
 
 .right-column {

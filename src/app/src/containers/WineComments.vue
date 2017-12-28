@@ -1,22 +1,27 @@
 <template>
   <div class="wine-comments">
+    <div v-for="comment in comments" :key="comment.WineId">
+      {{comment.Note}}
+    </div>
   </div>
 </template>
 
 <script>
-import wineService from "../services/wines";
+import commentsService from "../services/comments";
 
 export default {
   name: "WineComments",
-  props: ["vinmonopoletId"],
+  props: {
+    vinmonopoletId: String
+  },
   data() {
     return {
-      comments: {},
+      comments: [],
       error: ""
     };
   },
-  created() {
-    wineService
+  mounted() {
+    commentsService
       .get(this.vinmonopoletId)
       .then(response => {
         this.comments = response.data;

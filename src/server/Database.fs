@@ -43,7 +43,7 @@ let getCommentsDefault vinmonopoletId = async {
     let comments = 
         wines 
         |> Seq.filter (fun x -> (x.VinmonopoletId = vinmonopoletId))
-        |> Seq.map (fun wine -> {VinmonopoletId = wine.VinmonopoletId; Occation = wine.Occation; Note=wine.Note; ConsumptionDate=wine.ConsumptionDate})
+        |> Seq.map (fun wine -> {Id = wine.VinmonopoletId; Occation = wine.Occation; Note=wine.Note; ConsumptionDate=wine.ConsumptionDate})
     return comments
 }
 
@@ -73,7 +73,7 @@ let getPropertyFromTableEntity propName (result: DynamicTableEntity) =
 
 
 let mapWineToEntity (result: DynamicTableEntity) = 
-    { Id = result |> getPropertyFromTableEntity "RowKey"
+    { Id = result.RowKey
       VinmonopoletId = result |> getPropertyFromTableEntity "VinmonopoletId"
       Name = result |> getPropertyFromTableEntity "Name"
       Price =  result |> getPropertyFromTableEntity "Price"
@@ -117,10 +117,10 @@ let getCommentsFromDB connection vinmonopoletId = async {
         return! table.ExecuteQuerySegmentedAsync(TableQuery(FilterString = query), null) |> Async.AwaitTask }
     return 
         results |> Seq.map (fun result -> 
-            { VinmonopoletId = result.Properties.["VinmonopoletId"].StringValue
-              ConsumptionDate = result.Properties.["ConsumptionDate"].StringValue
-              Note = result.Properties.["Note"].StringValue
-              Occation = string result.Properties.["Occation"].StringValue } )
+            { Id = result.RowKey
+              ConsumptionDate = result |> getPropertyFromTableEntity "ConsumptionDate"
+              Note = result |> getPropertyFromTableEntity "Note"
+              Occation = result |> getPropertyFromTableEntity "Occation" } )
 }
                      
 let getWineList connection userName status = 
