@@ -71,6 +71,11 @@ let getPropertyFromTableEntity propName (result: DynamicTableEntity) =
       | true, value -> value.StringValue
       | _           -> ""
 
+let getDatePropertyFromTableEntity propName (result: DynamicTableEntity) =
+    let stringValue = getPropertyFromTableEntity propName result 
+    match System.DateTime.TryParse stringValue with
+      | true, value -> value.ToString "dd.MM.yyyy"
+      | _           -> ""
 
 let mapWineToEntity (result: DynamicTableEntity) = 
     { Id = result.RowKey
@@ -116,11 +121,13 @@ let getCommentsFromDB connection vinmonopoletId = async {
         let query = TableQuery.GenerateFilterCondition("VinmonopoletId", QueryComparisons.Equal, vinmonopoletId)           
         return! table.ExecuteQuerySegmentedAsync(TableQuery(FilterString = query), null) |> Async.AwaitTask }
     return 
-        results |> Seq.map (fun result -> 
+        results
+        |> Seq.map (fun result -> 
             { Id = result.RowKey
-              ConsumptionDate = result |> getPropertyFromTableEntity "ConsumptionDate"
+              ConsumptionDate = result |> getDatePropertyFromTableEntity "ConsumptionDate"
               Note = result |> getPropertyFromTableEntity "Note"
               Occation = result |> getPropertyFromTableEntity "Occation" } )
+        |> Seq.filter (fun x -> x.ConsumptionDate <> "")
 }
                      
 let getWineList connection userName status = 

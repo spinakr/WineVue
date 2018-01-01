@@ -9,12 +9,14 @@
       <div> {{wine.Name}}</div>
       <div>{{wine.Producer}}</div>
       <div>{{wine.Price}}</div>
-
-
-      <wine-comments v-if="wine.VinmonopoletId" v-bind:vinmonopolet-id="wine.VinmonopoletId"></wine-comments>
     </div>
+
     <div class="right-column">
       <img v-bind:src="imageUrl" alt="wine image">
+    </div>
+
+    <div class="bottom">
+      <wine-comments v-if="wine.VinmonopoletId" v-bind:vinmonopolet-id="wine.VinmonopoletId"></wine-comments>
     </div>
   </div>
 </template>
@@ -67,5 +69,10 @@ export default {
 
 .right-column {
   clear: right;
+}
+
+.bottom {
+  bottom: 0px;
+  width: 75%;
 }
 </style>
